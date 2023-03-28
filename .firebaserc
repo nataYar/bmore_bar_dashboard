@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "home-appliances-b8f33",
+    "home-appliances": "home-appliances-b8f33"
+  },
+  "targets": {},
+  "etags": {}
+}
