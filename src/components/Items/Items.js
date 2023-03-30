@@ -4,8 +4,8 @@ const Items = ({
     category, 
     items,
     updatedItems,
-    handleDeleteFn,
-    handleUpdateFn }) => {
+    handleItemDeleteFn,
+    handleItemUpdateFn }) => {
 
     
     // console.log(updatedItems)
@@ -32,7 +32,7 @@ const Items = ({
                             getItemNameById(category.id, item.id, "name") ?? item.name
                         }
                         onChange={(e) =>
-                            handleUpdateCallback (category.id, item.id, "name", e.target.value)
+                            handleUpdateCallback(category.id, item.id, "name", e.target.value)
                         }
                     />
                     <input
@@ -41,7 +41,7 @@ const Items = ({
                            getItemNameById(category.id, item.id, "description") ?? item.description
                         }
                         onChange={(e) =>
-                          handleUpdateCallback (category.id, item.id, "description", e.target.value)
+                          handleUpdateCallback(category.id, item.id, "description", e.target.value)
                         }
                     />
                     <button onClick={ () => handleDeleteCallback(category.id, item.name) }>Delete</button>

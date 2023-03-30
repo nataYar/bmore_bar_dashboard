@@ -91,7 +91,7 @@ const Dashboard = () => {
 
   const addNewCategory = () => { setNewCategoryForm(!newCategoryForm)}
 
-  const handleDelete = async (categoryId, itemName) => {
+  const handleItemDelete = async (categoryId, itemName) => {
     const categoryDocRef = doc(db, 'categories', categoryId);
     const categoryDocSnapshot = await getDoc(categoryDocRef);
     const categoryData = categoryDocSnapshot.data();
@@ -103,7 +103,6 @@ const Dashboard = () => {
     //update categories to exclude removed item from array of Items
     setCategories(categories.map(category => {
       if (category.id === categoryId) {
-        console.log(category.items)
         return {
           ...category,
           items: updatedItems
@@ -114,25 +113,13 @@ const Dashboard = () => {
       }
     }));
   };
-// useEffect(() => {
-//   categories.map(el => console.log(el.items))
-// }, 
-//   [categories])
+useEffect(() => {
+  // categories.map(el => console.log(el.items))
+  console.log(updatedItems)
+}, [updatedItems])
 
-  // const handleUpdate = (categoryId, itemId, field, value) => {
-  //   setUpdatedItems((prevState) => {
-  //     return {
-  //       ...prevState,
-  //       [itemId]: {
-  //         id: itemId,
-  //         [field]: value
-  //       }
-  //     }
-  //   });
-  // };
-
-  const handleUpdate = (categoryId, itemId, field, value) => {
-    setUpdatedItems((prevItems = []) => {
+  const handleItemUpdate = (categoryId, itemId, field, value) => {
+    setUpdatedItems((prevItems) => {
       const updatedCategoryIndex = categories.findIndex((cat) => cat.id === categoryId);
       const updatedItemIndex = categories[updatedCategoryIndex].items.findIndex((item) => item.id === itemId);
       const updatedItem = {
@@ -146,7 +133,7 @@ const Dashboard = () => {
         const existingItem = prevItems[existingItemIndex];
         const updatedExistingItem = {
           ...existingItem,
-          ...updatedItem
+          [field]: value
         };
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = updatedExistingItem;
@@ -154,36 +141,58 @@ const Dashboard = () => {
       }
       return [...prevItems, updatedItem];
     });
+    
   };
 
-
-  const handleSubmitItemUpdate = async (category) => {
-    const batch = writeBatch(db);
-    updatedItems.forEach((updatedItem) => {
-      const categoryIndex = updatedItem.categoryIndex;
-      const categoryRef = doc(db, "categories", categories[categoryIndex].id);
-      const itemIndex = categories[categoryIndex].items.findIndex((item) => item.id === updatedItem.id);
-      const itemToUpdate = {
-        ...categories[categoryIndex].items[itemIndex],
-        name: updatedItem.name,
-        description: updatedItem.description,
-      };
-      const updatedItemsArray = [...categories[categoryIndex].items];
-      updatedItemsArray[itemIndex] = itemToUpdate;
+  const handleSubmitItemUpdate = async () => {
+    const batch = writeBatch(db); //batch can write to multiple documents - instead of multiple update()/set()
+    categories.forEach((category, categoryIndex) => {
+      //  find all the items that must be updated in DB
+      // if an item is in the Updated array, return it with changes,
+      // if an item is not found in Updqted array => it goes to DB unchanged 
+      // then it all goes to the batch commited to DB
+      const updatedItemsArray = categories[categoryIndex].items.map((item) => {
+        const existingItem = updatedItems.find(
+          (updatedItem) =>
+            updatedItem.categoryIndex === categoryIndex && updatedItem.id === item.id
+        );
+         
+        if (existingItem) {
+          return {
+            ...item,
+            name: existingItem.name,
+            description: existingItem.description,
+          };
+        }
+        console.log(item)
+        return item;
+      });
+      const categoryRef = doc(db, "categories", category.id);
       batch.update(categoryRef, { items: updatedItemsArray });
     });
     await batch.commit();
   };
+  
+  
   
 
   return (
     <div className='dashboard-container'>
       <button onClick={ () => addNewCategory() }>Add category (e.g. paninis)</button>
       { newCategoryForm ? <NewCategoryForm /> : null }
-      
       <h2>Categories</h2>
+      <button onClick={() => handleSubmitItemUpdate()}>Save changes</button>
       { categories.map((category) => (
         <div key={category.id}>
+          {/* <input
+              type="text"
+              value={
+                  getItemNameById(category.id, item.id, "name") ?? item.name
+              }
+              onChange={(e) =>
+                  handleUpdateCallback(category.id, item.id, "name", e.target.value)
+              }
+          /> */}
           <h3>{category.name}</h3>
           <p>{category.category}</p>
           <p>Price: {category.price}</p>
@@ -193,10 +202,10 @@ const Dashboard = () => {
             items={category.items}
             updatedItems={updatedItems} 
             category={category} 
-            handleDeleteFn={ handleDelete }
-            handleUpdateFn={ handleUpdate } 
+            handleItemDeleteFn={ handleItemDelete }
+            handleItemUpdateFn={ handleItemUpdate } 
           />
-          <button onClick={() => handleSubmitItemUpdate(category)}>Save changes</button>
+          
 
         </div>
       ))}
