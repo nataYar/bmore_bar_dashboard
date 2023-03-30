@@ -69,7 +69,7 @@ export default function Login() {
     return (
         <div>
             { name ?  
-                <Dashboard />
+                <Dashboard /> 
             : 
             <div className='login-container'>
                 <form className='login' onSubmit={(e) => loginFn(e)} >
