@@ -1,6 +1,9 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
+import Menu from './components/Menu';
+import { Events } from './components/Events';
+import { Hours } from './components/Hours';
 import './index.css';
 import './styles.css';
 
@@ -8,7 +11,19 @@ function App() {
   const routes = [
     {
       path: '/',
-      element: <Login/>
+      element: <Login />
+    },
+    {
+      path: '/menu',
+      element: <Menu />
+    },
+    {
+      path: '/events',
+      element: <Events />
+    },
+    {
+      path: '/hours',
+      element: <Hours />
     }
   ];
 
