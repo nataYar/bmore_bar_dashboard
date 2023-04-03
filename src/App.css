@@ -1,5 +1,7 @@
-
 .app {
     overflow-x: hidden;
     background-color: white;
+    box-sizing: content-box;
+    padding: 0;
+    margin: 0
 }
