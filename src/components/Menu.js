@@ -98,7 +98,7 @@ const Menu = () => {
       const updatedItem = {
         ...categories[updatedCategoryIndex].items[updatedItemIndex],
         categoryIndex: updatedCategoryIndex,
-        [field]: value
+        [field]: value.trim()
       };
       //check if an item is already in updated array
       const existingItemIndex = prevItems.findIndex((item) => item.id === itemId);
@@ -106,7 +106,7 @@ const Menu = () => {
         const existingItem = prevItems[existingItemIndex];
         const updatedExistingItem = {
           ...existingItem,
-          [field]: value
+          [field]: value.trim()
         };
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = updatedExistingItem;
@@ -143,8 +143,8 @@ const Menu = () => {
         if (existingItem) {
           return {
             ...item,
-            name: existingItem.name,
-            description: existingItem.description,
+            name: existingItem.name.trim(),
+            description: existingItem.description.trim(),
           };
         }
         console.log(item)
@@ -175,7 +175,7 @@ const Menu = () => {
         const existingCategory = prevCategories[existingCategoryIndex];
         const updatedExistingCategory = {
           ...existingCategory,
-          [field]: value,
+          [field]: value.trim(),
         };
         const updatedCategories = [...prevCategories];
         updatedCategories[existingCategoryIndex] = updatedExistingCategory;
@@ -183,7 +183,7 @@ const Menu = () => {
       } else {
         const newCategory = {
           id: categoryId,
-          [field]: value,
+          [field]: value.trim(),
         };
         return [...prevCategories, newCategory];
       }

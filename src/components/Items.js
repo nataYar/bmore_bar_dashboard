@@ -45,7 +45,6 @@ const Items = ({
                     className="border-2 border-purple-400 bg-white hover:border-purple-600 
                     hover:text-purple-600 text-purple-400 py-2 px-4 rounded-lg font-bold"
                     onClick={ () => handleDeleteCallback(category.id, item.name) }>Delete item</button>
-                    
                 </div>
             )}
         </>

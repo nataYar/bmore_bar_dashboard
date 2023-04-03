@@ -4,6 +4,7 @@ import { db } from '../firebaseConfig';
 import {
     doc,
     updateDoc,
+    
   } from "firebase/firestore";
 
 export const AddItem = ({ category }) => {
