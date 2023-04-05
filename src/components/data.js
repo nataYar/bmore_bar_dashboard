@@ -1,3 +1,39 @@
+export const timetable = {
+    0: {
+      day: 'Mon', 
+      hours: ['Closed']
+    },
+    1: {
+      day: 'Tue', 
+      hours: ['Closed']
+    },
+    2: {
+      day: 'Wed', 
+      hours: ['11:00 AM - 5:00 PM']
+    },
+    3: {
+      day: 'Thu', 
+      hours: ['11:00 AM - 5:00 PM']
+    },
+    4: {
+      day: 'Fri',
+      hours: [
+        '11:00 AM - 3:00 PM',
+        '5:00 PM - 8:30 PM'
+      ]
+    },
+    5: {
+      day: 'Sat',
+      hours: [
+        '10:00 AM - 2:00 PM',
+        '4:30 PM - 8:30 PM'
+      ]
+    },
+    6: {
+      day: 'Sun',
+      hours: ['10:00 AM - 6:00 PM']
+    },
+  }
 
 export const MimosaMenu = {
     name: 'Mimosa Menù',
@@ -196,10 +232,6 @@ export const ProteinShakes = {
         }
     ]
 }
-    
-   
-    
-
 
 export const Pizza = {
     category: 'food', 

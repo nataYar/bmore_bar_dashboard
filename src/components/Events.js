@@ -3,17 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebaseConfig';
-import 'firebase/storage'; // Import the Storage module
 import { db } from '../firebaseConfig';
 import {
   collection,
-  onSnapshot,
   addDoc,
-  setDoc,
   deleteDoc,
   doc,
   getDocs,
-  updateDoc,
   Timestamp
 } from "firebase/firestore";
 
@@ -43,11 +39,6 @@ export const Events = () => {
             return eventDate >= now;
             }))
     }, [imagesData])
-
-    // useEffect(() => {
-    //     console.log(pastEvents)
-    //     console.log(futureEvents)
-    // }, [pastEvents, futureEvents])
 
     useEffect(() => {
         // Fetch the images data from Firestore
@@ -115,7 +106,7 @@ export const Events = () => {
   return (
     <div className="w-full bg-gray-100 flex flex-col items-center">
         <div className='w-ful fixed z-10 bg-gray-100 py-2 drop-shadow-md rounded-lg'>
-            <div className='w-screen h-auto px-4 flex justify-between lg:justify-end md:px-7'>
+            <div className='w-screen h-auto px-4 flex justify-between lg:justify-start md:px-7'>
                 <Link to="/">
                     <svg className="w-9" data-name="Livello 1" id="home-icon" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
                     <path d="M127.12,60.22,115.46,48.56h0L69,2.05a7,7,0,0,0-9.9,0L12.57,48.53h0L.88,60.22a3,3,0,0,0,4.24,4.24l6.57-6.57V121a7,7,0,0,0,7,7H46a7,7,0,0,0,7-7V81a1,1,0,0,1,1-1H74a1,1,0,0,1,1,1v40a7,7,0,0,0,7,7h27.34a7,7,0,0,0,7-7V57.92l6.54,6.54a3,3,0,0,0,4.24-4.24ZM110.34,121a1,1,0,0,1-1,1H82a1,1,0,0,1-1-1V81a7,7,0,0,0-7-7H54a7,7,0,0,0-7,7v40a1,1,0,0,1-1,1H18.69a1,1,0,0,1-1-1V51.9L63.29,6.29a1,1,0,0,1,1.41,0l45.63,45.63Z"/></svg>
@@ -134,39 +125,46 @@ export const Events = () => {
             
             {isSuccess && <p className='text-purple-500 mt-5 text-center'>Image uploaded!</p>} {/* display the message if isSuccess is true */}
         </div>
+        
         <div className='mt-10 flex flex-col items-center w-full my-10 bg-white px-2.5 py-4 rounded-lg'>
             <h2 className='mb-10 text-lg uppercase text-purple-500 font-bold'>Future events</h2>
-            {
-            futureEvents.map((image) => (
-              <div key={image.id}
-              className="mb-10" >
-                <img src={image.imageUrl} alt={`Event ${image.id}`} />
-                <p className='my-2'>{image.name}</p>
-                <p>{image.timestamp.toDate().toLocaleString()}</p>
-                <button 
-                    className="border-2 border-purple-400 bg-white hover:border-purple-600 
-                    hover:text-purple-600 text-purple-400 py-2 px-4 rounded-lg font-bold my-5"
-                    onClick={ () => handleDeleteImage(image.id) }>Delete</button>
-              </div>
-              ))
-            }
+            <div className='flex flex-col md:flex-row gap-10'>
+                {
+                futureEvents.map((image) => (
+                <div key={image.id}
+                className="mb-10" >
+                    <img className='md:max-h-96' src={image.imageUrl} alt={`Event ${image.id}`} />
+                    <p className='my-2'>{image.name}</p>
+                    <p>{image.timestamp.toDate().toLocaleString()}</p>
+                    <button 
+                        className="border-2 border-purple-400 bg-white hover:border-purple-600 
+                        hover:text-purple-600 text-purple-400 py-2 px-4 rounded-lg font-bold my-5"
+                        onClick={ () => handleDeleteImage(image.id) }>Delete</button>
+                </div>
+                ))
+                }
+            </div>
+           
         </div>
+        
         <div className='mt-10 flex flex-col items-center w-full my-10 bg-white px-2.5 py-4 rounded-lg'>
             <h2 className='mb-10 text-lg uppercase text-purple-500 font-bold'>Past events</h2>
+            <div className='flex flex-col md:flex-row gap-10'>
             {
-            pastEvents.map((image) => (
-              <div key={image.id}
-              className="mb-10">
-                <img src={image.imageUrl} alt={`Event ${image.id}`} />
-                <p className='my-2'>{image.name}</p>
-                <p>{image.timestamp.toDate().toLocaleString()}</p>
-                <button 
-                    className="border-2 border-purple-400 bg-white hover:border-purple-600 
-                    hover:text-purple-600 text-purple-400 py-2 px-4 rounded-lg font-bold my-5"
-                    onClick={ () => handleDeleteImage(image.id) }>Delete</button>
-              </div>
-              ))
-            }
+                pastEvents.map((image) => (
+                <div key={image.id}
+                className="mb-10">
+                    <img className='md:max-h-96' src={image.imageUrl} alt={`Event ${image.id}`} />
+                    <p className='my-2'>{image.name}</p>
+                    <p>{image.timestamp.toDate().toLocaleString()}</p>
+                    <button 
+                        className="border-2 border-purple-400 bg-white hover:border-purple-600 
+                        hover:text-purple-600 text-purple-400 py-2 px-4 rounded-lg font-bold my-5"
+                        onClick={ () => handleDeleteImage(image.id) }>Delete</button>
+                </div>
+                ))
+                }
+            </div>
         </div>
     </div>
   )

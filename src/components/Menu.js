@@ -40,10 +40,6 @@ const Menu = () => {
       console.error("Error adding category: ", error);
     }
   }
- 
-// useEffect(() => {
-  // addCategoryToFirestore(OJDetoxImmuneBooster)
-// }, [])
 
   useEffect(() => {
     onSnapshot(collection(db, 'categories'), (snapshot) => {
@@ -92,7 +88,7 @@ const Menu = () => {
   };
 
   const handleItemUpdate = (categoryId, itemId, field, value) => {
-    setUpdatedItems((prevItems) => {
+    setUpdatedItems((prevItems) => { // prevItems = current state value of an array of items that is been updated
       const updatedCategoryIndex = categories.findIndex((cat) => cat.id === categoryId);
       const updatedItemIndex = categories[updatedCategoryIndex].items.findIndex((item) => item.id === itemId);
       const updatedItem = {
@@ -222,12 +218,12 @@ const Menu = () => {
            
             <div className='h-full w-full flex justify-between md:justify-end ml-10'>
               <button 
-              className="w-auto lg:w-40 h-12  bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg"
+              className="w-auto lg:w-40 h-auto  bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg"
               onClick={ () => addNewCategory() }>Add category</button>
               <button 
               className={ updatedCategories.length >0 || updatedItems.length >0 ? 
-              "bg-yellow-400 hover:bg-yellow-500 w-auto h-12 lg:w-40 rounded-lg text-black font-bold lg:ml-8 " : 
-              "rounded-lg w-auto h-12 lg:ml-8 lg:w-40 cursor-not-allowed  bg-gray-300  text-white font-bold py-2 px-4"}   
+              "ml-5 rounded-lg w-auto h-auto lg:ml-8 lg:w-40 cursor-pointer bg-yellow-400  text-black font-bold py-2 px-4": 
+              "ml-5 rounded-lg w-auto h-auto lg:ml-8 lg:w-40 cursor-not-allowed  bg-gray-300  text-white font-bold py-2 px-4"}   
               onClick={() => handleSubmit()}
               >Save changes</button>
             </div>
@@ -270,7 +266,6 @@ const Menu = () => {
         <div key={category.id} 
         id={category.id}
         className="w-full my-10 bg-white px-2.5 py-4 rounded-lg">
-          
           <div className="box-border w-full flex justify-between pb-4">
             <button 
               className="h-12 border-2 border-purple-400 bg-white hover:border-purple-600 
