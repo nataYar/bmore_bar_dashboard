@@ -216,7 +216,7 @@ const Menu = () => {
           </Link>
           
            
-            <div className='h-full w-full flex justify-between md:justify-end ml-10'>
+            <div className='h-full flex justify-between md:justify-end ml-10'>
               <button 
               className="w-auto lg:w-40 h-auto  bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg"
               onClick={ () => addNewCategory() }>Add category</button>
