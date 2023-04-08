@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import { doc, addDoc, setDoc, collection, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 
@@ -31,10 +31,6 @@ export const Hours = () => {
       setHoursData(arr)
     })
   }, []);
-
-  useEffect(() => {
-    console.log(newHoursData)
-  }, [newHoursData])
 
   const handleDeleteLine = async (dayIndex, hourIndex) => {
     // create a new array without the deleted hour

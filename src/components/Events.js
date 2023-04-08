@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-// import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebaseConfig';
@@ -56,7 +55,6 @@ export const Events = () => {
       }, [imageUrl]);
 
     const handleImageChange = (event) => {
-        
         const file = event.target.files[0];
         setImage(file);
       };

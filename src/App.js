@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Menu from './components/Menu';
 import { Events } from './components/Events';
 import { Hours } from './components/Hours';
+import { Gallery } from './components/Gallery';
 import './index.css';
 import './styles.css';
 
@@ -24,6 +25,10 @@ function App() {
     {
       path: '/hours',
       element: <Hours />
+    },
+    {
+      path: '/gallery',
+      element: <Gallery />
     }
   ];
 
