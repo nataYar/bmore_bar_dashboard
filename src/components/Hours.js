@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { doc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-
+import UserContext from './UserContext';
+import { useNavigate } from 'react-router-dom';
 
 
 export const Hours = () => {
   const [hoursData, setHoursData] = useState([])
   const [newHoursData, setNewHoursData] = useState([])
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if ( !user ) {
+      navigate('/');
+    }
+  }, [])
 
   // const addTimetableToFirestore = async (timetable) => {
   //   try {

@@ -25,6 +25,16 @@
   --tw-content: '';
 }
 
+/* Hide password text by default */
+#password-input[type="password"] {
+  -webkit-text-security: disc;
+}
+
+/* Show password text when checkbox is checked */
+#password-toggle:checked ~ #password-input[type="password"] {
+  -webkit-text-security: none;
+}
+
 /*
 1. Use a consistent sensible line-height in all browsers.
 2. Prevent adjustments of font size after orientation changes in iOS.
@@ -224,7 +234,6 @@ button,
 [type='submit'] {
   -webkit-appearance: button;
   /* 1 */
-  background-color: transparent;
   /* 2 */
   background-image: none;
   /* 2 */

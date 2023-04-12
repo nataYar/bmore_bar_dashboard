@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext} from 'react'
+import { useNavigate } from 'react-router-dom';
+import UserContext from './UserContext';
 import { Link } from 'react-router-dom';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, deleteObject, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebaseConfig';
 import { db } from '../firebaseConfig';
 import {
@@ -14,6 +16,15 @@ import {
 
 
 export const Events = () => {
+    const { user } = useContext(UserContext);
+    const navigate = useNavigate();
+
+  useEffect(() => {
+    if ( !user ) {
+      navigate('/');
+    }
+  }, [])
+
     const [selectedDate, setSelectedDate] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
     const [image, setImage] = useState(null);
@@ -92,14 +103,19 @@ export const Events = () => {
         }
     };
 
-    const handleDeleteImage = async (id) => {
+    const handleDeleteImage = async (id, index) => {
         const eventRef = doc(db, 'events', id);
         await deleteDoc(eventRef);
       
         setImagesData((prevState) => prevState.filter((event) => event.id !== id));
         setPastEvents((prevState) => prevState.filter((eventId) => eventId !== id));
         setFutureEvents((prevState) => prevState.filter((eventId) => eventId !== id));
-      };
+
+        const imagesRef = ref(storage, "events/");
+        const imageToDeleteRef = await listAll(imagesRef)
+        .then((res) => res.items[index]);
+        await deleteObject(imageToDeleteRef);
+    };
 
   return (
     <div className="w-full bg-gray-100 flex flex-col items-center">
@@ -128,7 +144,7 @@ export const Events = () => {
             <h2 className='mb-10 text-lg uppercase text-purple-500 font-bold'>Future events</h2>
             <div className='flex flex-col md:flex-row gap-10'>
                 {
-                futureEvents.map((image) => (
+                futureEvents.map((image, index) => (
                 <div key={image.id}
                 className="mb-10" >
                     <img className='md:max-h-96' src={image.imageUrl} alt={`Event ${image.id}`} />
@@ -137,7 +153,7 @@ export const Events = () => {
                     <button 
                         className="border-2 border-purple-400 bg-white hover:border-purple-600 
                         hover:text-purple-600 text-purple-400 py-2 px-4 rounded-lg font-bold my-5"
-                        onClick={ () => handleDeleteImage(image.id) }>Delete</button>
+                        onClick={ () => handleDeleteImage(image.id, index) }>Delete</button>
                 </div>
                 ))
                 }

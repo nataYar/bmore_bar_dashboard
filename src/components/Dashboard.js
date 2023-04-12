@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom';
+import UserContext from './UserContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Dashboard = () => {
-   
+    const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+  
+    useEffect(() => {
+      if ( !user ) {
+        navigate('/');
+      }
+    }, [])
+
   return (
     <div className="w-full h-screen bg-gray-100 py-60 flex flex-col justify-evenly items-center">
         <Link to="/menu">

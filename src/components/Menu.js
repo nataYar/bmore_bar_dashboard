@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import UserContext from './UserContext';
+import { useNavigate } from 'react-router-dom';
+
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import NewCategoryForm from './NewCategoryForm';
@@ -17,6 +20,16 @@ import {
 } from "firebase/firestore";
 
 const Menu = () => {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if ( !user ) {
+      navigate('/');
+  }
+  }, [])
+  
+
   const [newCategoryForm, setNewCategoryForm] = useState(false)
   const [categories, setCategories] = useState([]);
   const [updatedCategories, setUpdatedCategories] = useState([]);
@@ -234,7 +247,7 @@ const Menu = () => {
         }
       </div>
       
-      <div className='w-full px-5 mt-14'>
+      <div className='w-full px-5 mt-20'>
         <div>
         { categories
         // .sort((a, b) => a.name - b.name)
@@ -261,6 +274,7 @@ const Menu = () => {
           ))
         }
         </div>
+        
       { categories
       .map((category) => (
         <div key={category.id} 

@@ -1,50 +1,96 @@
-import React, { useEffect, useState } from 'react'
-// import { v4 as uuidv4 } from 'uuid';
+import React, { useEffect, useState, useContext  } from 'react'
 import { Link } from 'react-router-dom';
-import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
+import UserContext from './UserContext';
+import { useNavigate } from 'react-router-dom';
+
+import { ref, deleteObject, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebaseConfig';
+import { db } from '../firebaseConfig';
+import {
+  onSnapshot,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc
+} from "firebase/firestore";
 
 export const Gallery = () => {
-    const [image, setImage] = useState(null);
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [picUrls, setPicUrls] = useState([])
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  
+  const [newImage, setNewImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [imagesData, setImagesData] = useState([]);
 
-    useEffect(() => {
-        const imagesRef = ref(storage, "gallery/");
-        listAll(imagesRef)
-          .then((res) => {
-            console.log(res.items);
-            const promises = res.items.map((itemRef) => getDownloadURL(itemRef));
-            //wait for all the download URL promises to resolve
-            Promise.all(promises).then((urls) => {
-              setPicUrls(urls);
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }, []);
+  useEffect(() => {
+    if ( !user ) {
+      navigate('/');
+    }
+  }, [])
+  
+  useEffect(() => {
+    const eventsRef = collection(db, 'gallery');
+    const unsubscribe = onSnapshot(eventsRef, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setImagesData(data);
+    });
+    return unsubscribe;
+  }, []);
 
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        setImage(file);
-      };
+  useEffect(() => {
+    console.log(imagesData)
+  }, [imagesData])
 
-    const handleImageUpload = (event) => {
-        event.preventDefault()
-        if (!image) {
-            return;
-        }
-        const storageRef = ref(storage, `gallery/${image.name}`);
-        try {
-            uploadBytes(storageRef, image)
-            .then(() => {
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setNewImage(file);
+  };
+
+  const handleImageUpload = (e) => {
+    e.preventDefault();
+      const storageRef = ref(storage, `gallery/${newImage.name}`);
+      try {
+          uploadBytes(storageRef, newImage)
+          .then(() => {
+            getDownloadURL(storageRef)
+            .then(async (url) => {
+                const eventsRef = collection(db, 'gallery');
+                const docRef = await addDoc(eventsRef, { 
+                    url: url,
+                    name: newImage.name
+                });
+                setNewImage(null);
                 setIsSuccess(true); // set isSuccess state to true
+            })
+            .catch((error) => {
+                console.log(error);
             });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+        });
+      } 
+      catch (error) {
+          console.log(error);
+      }
+  };
+
+  const handleDeleteClick = async (id, index) => {
+    try {
+        const eventRef = doc(db, 'gallery', id);
+        await deleteDoc(eventRef);
+        setImagesData((prevState) => prevState.filter((event) => event.id !== id));
+
+        const imagesRef = ref(storage, "gallery/");
+        const imageToDeleteRef = await listAll(imagesRef)
+        .then((res) => res.items[index]);
+        await deleteObject(imageToDeleteRef);
+        
+      } catch (error) {
+        console.log(error);
+      } 
+  };
 
   return (
      <div className="w-full bg-gray-100 flex flex-col items-center">
@@ -56,16 +102,41 @@ export const Gallery = () => {
                 </Link>
             </div>
         </div>
-        <div className='w-full px-5 mt-20 flex flex-col'>
-        <input className='text-purple-500' type="file" onChange={handleImageChange} />
-        </div>
-        <div className="flex flex-wrap justify-evenly w-full h-auto gap-2 flex-row p-5" >
+        <div className='w-full px-5 mt-20 flex flex-col bg-white'>
+          <label 
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white rounded-lg " forhtml="file_input">Upload file</label>
+          <input 
+          className="block w-full mx-2 text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 focus:outline-none " id="file_input" 
+          type="file"
+          onChange={ handleImageChange}  />
         {
-            picUrls.map((image, ind) => (
-              
-            <img className='md:w-5/12 lg:w-64' src={image}  />
+            newImage ? 
+            <button  
+            className="w-20 bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-1 rounded-lg mx-auto mt-4 mb-8"
+            onClick={(e) => handleImageUpload(e)} 
+            >Add </button> 
+            : null
+        }
+        </div>
+        {isSuccess ? <p className='my-4'>Successfully uploaded</p> : null}
+        
+        <div className="flex flex-row flex-wrap justify-evenly w-full gap-2 p-5 bg-white" >
+          {
+            imagesData.map((image, ind) => (
+            <div className='w-2/5 md:w-1/3 lg:w-1/4'
+            key={ind}>
+                <img className='w-full' src={image.url}  />
+                <p>{image.name}</p>
+                <button 
+                className="w-20 h-9 border-2 border-purple-400 bg-white hover:border-purple-600 
+                hover:text-purple-600 text-purple-400 py-1 px-1 rounded-lg font-bold"
+                onClick={() => handleDeleteClick(image.id, ind)} 
+                >
+                Delete
+                </button>
+            </div>
             ))
-            }
+          }
         </div>
     </div>
   )
