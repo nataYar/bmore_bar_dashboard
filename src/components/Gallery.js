@@ -93,7 +93,7 @@ export const Gallery = () => {
   };
 
   return (
-     <div className="w-full bg-gray-100 flex flex-col items-center">
+     <div className="w-full flex flex-col items-center">
         <div className='w-ful fixed z-10 bg-gray-100 py-2 drop-shadow-md rounded-lg'>
             <div className='w-screen h-auto px-4 flex justify-between lg:justify-start md:px-7'>
                 <Link to="/">

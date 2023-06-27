@@ -56,6 +56,7 @@ const NewCategoryForm = ({ toggleNewCategoryForm }) => {
     <form 
     className="rounded-lg w-full bg-gray-100 flex flex-col items-start px-5 py-5"
     onSubmit={handleSubmit}>
+      <div className="lg:w-2/3 w-full mr-auto ml-auto">
       {error && <div>{error}</div>}
       <label className="mb-4 text-gray-900" htmlFor="categoryNew">New category name:</label>
       <input
@@ -69,11 +70,11 @@ const NewCategoryForm = ({ toggleNewCategoryForm }) => {
       <label className="mb-4 text-gray-900" htmlFor="price">Price:</label>
       <input
          className='mb-4 bg-gray-50  border-gray-500 focus:border-gray-500  text-gray-900 focus:ring-gray-500  block w-full p-2.5 rounded-lg'
-        type="number"
+        type="text"
         id="price"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
-        required
+      
       />
       <label className="mb-4 text-gray-900"  htmlFor="note">Notes (will be displayed under the category name)</label>
       <input
@@ -97,6 +98,7 @@ const NewCategoryForm = ({ toggleNewCategoryForm }) => {
       <button 
        className="bg-yellow-400 hover:bg-yellow-500 w-5/12 h-12 rounded-lg text-black font-bold lg:w-auto lg:py-2 lg:px-4" 
       >Add Category</button>
+      </div>
     </form>
   );
 };

@@ -21,7 +21,7 @@ const Items = ({
     return (
         <>
         { items.map((item, index) => 
-                <div className="w-full my-6 flex flex-col items-start" key={index}> 
+                <div className="w-full mt-6 mb-20 flex flex-col items-start border border-gray-400 p-4 rounded-lg " key={index}> 
                     <input
                     className='mb-4 bg-gray-50 border-none text-gray-900 rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5'
                         type="text"

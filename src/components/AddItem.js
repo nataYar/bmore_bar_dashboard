@@ -12,10 +12,6 @@ export const AddItem = ({ category }) => {
     const [itemDescription, setItemDescription] = useState("");
   
     const handleAddItem = async () => {
-      if (!itemName || !itemDescription) {
-        alert("Please fill out the name and price fields");
-        return;
-      }
       const itemToAdd = { 
         name: itemName, 
         description: itemDescription, 
